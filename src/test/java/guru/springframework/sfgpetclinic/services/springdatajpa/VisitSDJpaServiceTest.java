@@ -3,6 +3,7 @@ package guru.springframework.sfgpetclinic.services.springdatajpa;
 import guru.springframework.sfgpetclinic.model.Visit;
 import guru.springframework.sfgpetclinic.repositories.VisitRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,6 +15,8 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,39 +37,53 @@ class VisitSDJpaServiceTest {
         visits = Set.of(visit);
     }
 
+    @DisplayName("Test Find All")
     @Test
     void findAll() {
-        when(visitRepository.findAll()).thenReturn(visits);
+        // given
+        given(visitRepository.findAll()).willReturn(visits);
+        // when
         Set<Visit> foundVisits = service.findAll();
-        verify(visitRepository).findAll();
+        // then
+        then(visitRepository).should().findAll();
         assertThat(foundVisits).hasSize(1);
     }
 
     @Test
     void findById() {
-        when(visitRepository.findById(anyLong())).thenReturn(Optional.of(visit));
+        // given
+        given(visitRepository.findById(anyLong())).willReturn(Optional.of(visit));
+        // when
         Visit foundVisit = service.findById(1L);
-        verify(visitRepository).findById(anyLong());
+        // then
+        then(visitRepository).should().findById(anyLong());
         assertThat(foundVisit).isNotNull();
     }
 
     @Test
     void save() {
-        when(visitRepository.save(any(Visit.class))).thenReturn(visit);
+        // given
+        given(visitRepository.save(any(Visit.class))).willReturn(visit);
+        // when
         Visit savedVisit = service.save(new Visit());
-        verify(visitRepository).save(any(Visit.class));
+        // then
+        then(visitRepository).should().save(any(Visit.class));
         assertThat(savedVisit).isNotNull();
     }
 
     @Test
     void delete() {
+        // when
         service.delete(visit);
-        verify(visitRepository,atLeastOnce()).delete(any(Visit.class));
+        // then
+        then(visitRepository).should(atLeastOnce()).delete(any(Visit.class));
     }
 
     @Test
     void deleteById() {
+        // when
         service.deleteById(1L);
-        verify(visitRepository,atLeastOnce()).deleteById(1L);
+        // then
+        then(visitRepository).should(atLeastOnce()).deleteById(1L);
     }
 }
