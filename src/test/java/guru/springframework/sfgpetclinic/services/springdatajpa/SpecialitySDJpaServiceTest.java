@@ -14,7 +14,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SpecialitySDJpaServiceTest {
@@ -55,8 +54,8 @@ class SpecialitySDJpaServiceTest {
 
         // then
         assertThat(foundSpeciality).isNotNull();
-        then(specialtyRepository).should().findById(1L);
-        then(specialtyRepository).should(times(1)).findById(1L);
+        then(specialtyRepository).should(timeout(100)).findById(anyLong());
+        then(specialtyRepository).should(times(1)).findById(anyLong());
         then(specialtyRepository).shouldHaveNoMoreInteractions();
     }
 
@@ -65,14 +64,14 @@ class SpecialitySDJpaServiceTest {
     void deleteById() {
         service.deleteById(1L);
         service.deleteById(1L);
-        then(specialtyRepository).should(times(2)).deleteById(1L);
+        then(specialtyRepository).should(timeout(100).times(2)).deleteById(1L);
     }
 
     @Test
     void deleteByIdAtLeast() {
         service.deleteById(1L);
         service.deleteById(1L);
-        then(specialtyRepository).should(atLeastOnce()).deleteById(1L);
+        then(specialtyRepository).should(timeout(100).atLeastOnce()).deleteById(1L);
     }
 
     @Test
